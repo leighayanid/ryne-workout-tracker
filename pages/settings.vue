@@ -1,3 +1,78 @@
+<script setup lang="ts">
+definePageMeta({
+  layout: 'default'
+})
+
+import {
+  Cog6ToothIcon,
+  PaintBrushIcon,
+  MoonIcon,
+  SunIcon,
+  ArrowPathIcon,
+  WifiIcon,
+  ClockIcon,
+  CircleStackIcon,
+  RectangleStackIcon,
+  DocumentDuplicateIcon,
+  InformationCircleIcon,
+  SparklesIcon,
+  CheckCircleIcon,
+  ShieldCheckIcon,
+  ExclamationTriangleIcon,
+  TrashIcon
+} from '@heroicons/vue/24/outline'
+
+const { isOnline } = useNetwork()
+const { syncing, lastSyncTime, syncData } = useSync()
+const { workouts, loadWorkouts } = useWorkouts()
+const { templates, loadTemplates } = useTemplates()
+const { colorMode, toggleTheme } = useTheme()
+
+const showClearData = ref(false)
+
+const lastSyncText = computed(() => {
+  if (!lastSyncTime.value) return 'Never'
+
+  const now = new Date()
+  const diff = now.getTime() - new Date(lastSyncTime.value).getTime()
+  const minutes = Math.floor(diff / 60000)
+
+  if (minutes < 1) return 'Just now'
+  if (minutes === 1) return '1 minute ago'
+  if (minutes < 60) return `${minutes} minutes ago`
+
+  const hours = Math.floor(minutes / 60)
+  if (hours === 1) return '1 hour ago'
+  if (hours < 24) return `${hours} hours ago`
+
+  const days = Math.floor(hours / 24)
+  if (days === 1) return '1 day ago'
+  return `${days} days ago`
+})
+
+const pendingCount = computed(() => {
+  return workouts.value.filter(w => w.syncStatus === 'pending').length
+})
+
+const handleManualSync = async () => {
+  await syncData()
+  await loadWorkouts()
+}
+
+const handleClearData = async () => {
+  // Clear IndexedDB
+  indexedDB.deleteDatabase('gymnote-db')
+
+  // Reload
+  window.location.reload()
+}
+
+onMounted(async () => {
+  await loadWorkouts()
+  await loadTemplates()
+})
+</script>
+
 <template>
   <div class="max-w-screen-xl mx-auto px-4 py-6 space-y-6">
     <!-- Page Header -->
@@ -268,74 +343,3 @@
     </UiModal>
   </div>
 </template>
-
-<script setup lang="ts">
-import {
-  Cog6ToothIcon,
-  PaintBrushIcon,
-  MoonIcon,
-  SunIcon,
-  ArrowPathIcon,
-  WifiIcon,
-  ClockIcon,
-  CircleStackIcon,
-  RectangleStackIcon,
-  DocumentDuplicateIcon,
-  InformationCircleIcon,
-  SparklesIcon,
-  CheckCircleIcon,
-  ShieldCheckIcon,
-  ExclamationTriangleIcon,
-  TrashIcon
-} from '@heroicons/vue/24/outline'
-
-const { isOnline } = useNetwork()
-const { syncing, lastSyncTime, syncData } = useSync()
-const { workouts, loadWorkouts } = useWorkouts()
-const { templates, loadTemplates } = useTemplates()
-const { colorMode, toggleTheme } = useTheme()
-
-const showClearData = ref(false)
-
-const lastSyncText = computed(() => {
-  if (!lastSyncTime.value) return 'Never'
-
-  const now = new Date()
-  const diff = now.getTime() - new Date(lastSyncTime.value).getTime()
-  const minutes = Math.floor(diff / 60000)
-
-  if (minutes < 1) return 'Just now'
-  if (minutes === 1) return '1 minute ago'
-  if (minutes < 60) return `${minutes} minutes ago`
-
-  const hours = Math.floor(minutes / 60)
-  if (hours === 1) return '1 hour ago'
-  if (hours < 24) return `${hours} hours ago`
-
-  const days = Math.floor(hours / 24)
-  if (days === 1) return '1 day ago'
-  return `${days} days ago`
-})
-
-const pendingCount = computed(() => {
-  return workouts.value.filter(w => w.syncStatus === 'pending').length
-})
-
-const handleManualSync = async () => {
-  await syncData()
-  await loadWorkouts()
-}
-
-const handleClearData = async () => {
-  // Clear IndexedDB
-  indexedDB.deleteDatabase('gymnote-db')
-
-  // Reload
-  window.location.reload()
-}
-
-onMounted(async () => {
-  await loadWorkouts()
-  await loadTemplates()
-})
-</script>

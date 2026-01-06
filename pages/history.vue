@@ -1,3 +1,70 @@
+<script setup lang="ts">
+definePageMeta({
+  layout: 'default'
+})
+
+import {
+  ClockIcon,
+  DocumentTextIcon,
+  PlusCircleIcon,
+  CalendarDaysIcon,
+  FireIcon,
+  RectangleStackIcon
+} from '@heroicons/vue/24/outline'
+import type { LocalWorkout } from '~/types'
+
+const { workouts, loading, loadWorkouts } = useWorkouts()
+
+const groupedWorkouts = computed(() => {
+  const groups: Record<string, LocalWorkout[]> = {}
+
+  workouts.value.forEach(workout => {
+    const date = new Date(workout.date)
+    date.setHours(0, 0, 0, 0)
+    const dateKey = date.toISOString()
+
+    if (!groups[dateKey]) {
+      groups[dateKey] = []
+    }
+    groups[dateKey].push(workout)
+  })
+
+  return groups
+})
+
+const formatDate = (dateStr: string) => {
+  const date = new Date(dateStr)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const yesterday = new Date(today)
+  yesterday.setDate(yesterday.getDate() - 1)
+
+  if (date.getTime() === today.getTime()) {
+    return 'Today'
+  } else if (date.getTime() === yesterday.getTime()) {
+    return 'Yesterday'
+  } else {
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  }
+}
+
+const formatTime = (date: Date) => {
+  return new Date(date).toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit'
+  })
+}
+
+onMounted(async () => {
+  await loadWorkouts()
+})
+</script>
+
 <template>
   <div class="max-w-screen-xl mx-auto px-4 py-6">
     <!-- Page Header -->
@@ -121,66 +188,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import {
-  ClockIcon,
-  DocumentTextIcon,
-  PlusCircleIcon,
-  CalendarDaysIcon,
-  FireIcon,
-  RectangleStackIcon
-} from '@heroicons/vue/24/outline'
-import type { LocalWorkout } from '~/types'
-
-const { workouts, loading, loadWorkouts } = useWorkouts()
-
-const groupedWorkouts = computed(() => {
-  const groups: Record<string, LocalWorkout[]> = {}
-
-  workouts.value.forEach(workout => {
-    const date = new Date(workout.date)
-    date.setHours(0, 0, 0, 0)
-    const dateKey = date.toISOString()
-
-    if (!groups[dateKey]) {
-      groups[dateKey] = []
-    }
-    groups[dateKey].push(workout)
-  })
-
-  return groups
-})
-
-const formatDate = (dateStr: string) => {
-  const date = new Date(dateStr)
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const yesterday = new Date(today)
-  yesterday.setDate(yesterday.getDate() - 1)
-
-  if (date.getTime() === today.getTime()) {
-    return 'Today'
-  } else if (date.getTime() === yesterday.getTime()) {
-    return 'Yesterday'
-  } else {
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
-  }
-}
-
-const formatTime = (date: Date) => {
-  return new Date(date).toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: '2-digit'
-  })
-}
-
-onMounted(async () => {
-  await loadWorkouts()
-})
-</script>

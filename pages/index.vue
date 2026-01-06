@@ -1,3 +1,135 @@
+<script setup lang="ts">
+definePageMeta({
+  layout: 'default'
+})
+
+import { gsap } from 'gsap'
+import {
+  CalendarIcon,
+  SparklesIcon,
+  FireIcon,
+  RectangleStackIcon,
+  PlusCircleIcon,
+  BoltIcon,
+  ClockIcon,
+  RocketLaunchIcon,
+  PlusIcon,
+  TrashIcon
+} from '@heroicons/vue/24/outline'
+
+const { templates, loadTemplates, createWorkoutFromTemplate } = useTemplates()
+const { workouts, loadWorkouts, createWorkout } = useWorkouts()
+
+const showNewWorkout = ref(false)
+const newWorkoutNotes = ref('')
+const newWorkoutExercises = ref([
+  { name: '', sets: 3, reps: 10, weight: 0 }
+])
+
+const formattedDate = computed(() => {
+  const now = new Date()
+  return now.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+})
+
+const todayWorkouts = computed(() => {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const tomorrow = new Date(today)
+  tomorrow.setDate(tomorrow.getDate() + 1)
+
+  return workouts.value.filter(w => {
+    const workoutDate = new Date(w.date)
+    return workoutDate >= today && workoutDate < tomorrow
+  })
+})
+
+const canSaveWorkout = computed(() => {
+  return newWorkoutExercises.value.some(e => e.name.trim() !== '')
+})
+
+const formatTime = (date: Date) => {
+  return new Date(date).toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit'
+  })
+}
+
+const addExercise = () => {
+  newWorkoutExercises.value.push({ name: '', sets: 3, reps: 10, weight: 0 })
+}
+
+const removeExercise = (index: number) => {
+  newWorkoutExercises.value.splice(index, 1)
+}
+
+const startFromTemplate = async (templateId: string) => {
+  await createWorkoutFromTemplate(templateId)
+  await loadWorkouts()
+}
+
+const saveNewWorkout = async () => {
+  const validExercises = newWorkoutExercises.value.filter(e => e.name.trim() !== '')
+
+  await createWorkout({
+    date: new Date(),
+    notes: newWorkoutNotes.value || undefined,
+    exercises: validExercises
+  })
+
+  // Reset form
+  showNewWorkout.value = false
+  newWorkoutNotes.value = ''
+  newWorkoutExercises.value = [{ name: '', sets: 3, reps: 10, weight: 0 }]
+
+  await loadWorkouts()
+}
+
+onMounted(async () => {
+  await loadTemplates()
+  await loadWorkouts()
+
+  // Animate page elements on mount
+  nextTick(() => {
+    // Animate header
+    gsap.from('.space-y-2', {
+      y: -20,
+      opacity: 0,
+      duration: 0.6,
+      ease: 'power2.out'
+    })
+
+    // Animate template cards
+    const templateCards = document.querySelectorAll('.grid.grid-cols-2 > button')
+    gsap.from(templateCards, {
+      scale: 0.8,
+      opacity: 0,
+      duration: 0.5,
+      stagger: 0.1,
+      ease: 'back.out(1.7)',
+      delay: 0.2
+    })
+
+    // Animate workout cards if they exist
+    const workoutCards = document.querySelectorAll('.space-y-3 > a')
+    if (workoutCards.length > 0) {
+      gsap.from(workoutCards, {
+        x: -30,
+        opacity: 0,
+        duration: 0.5,
+        stagger: 0.1,
+        ease: 'power2.out',
+        delay: 0.4
+      })
+    }
+  })
+})
+</script>
+
 <template>
   <div class="max-w-screen-xl mx-auto px-4 py-6 space-y-6">
     <!-- Page Header -->
@@ -202,131 +334,3 @@
     </UiModal>
   </div>
 </template>
-
-<script setup lang="ts">
-import { gsap } from 'gsap'
-import {
-  CalendarIcon,
-  SparklesIcon,
-  FireIcon,
-  RectangleStackIcon,
-  PlusCircleIcon,
-  BoltIcon,
-  ClockIcon,
-  RocketLaunchIcon,
-  PlusIcon,
-  TrashIcon
-} from '@heroicons/vue/24/outline'
-
-const { templates, loadTemplates, createWorkoutFromTemplate } = useTemplates()
-const { workouts, loadWorkouts, createWorkout } = useWorkouts()
-
-const showNewWorkout = ref(false)
-const newWorkoutNotes = ref('')
-const newWorkoutExercises = ref([
-  { name: '', sets: 3, reps: 10, weight: 0 }
-])
-
-const formattedDate = computed(() => {
-  const now = new Date()
-  return now.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-})
-
-const todayWorkouts = computed(() => {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const tomorrow = new Date(today)
-  tomorrow.setDate(tomorrow.getDate() + 1)
-
-  return workouts.value.filter(w => {
-    const workoutDate = new Date(w.date)
-    return workoutDate >= today && workoutDate < tomorrow
-  })
-})
-
-const canSaveWorkout = computed(() => {
-  return newWorkoutExercises.value.some(e => e.name.trim() !== '')
-})
-
-const formatTime = (date: Date) => {
-  return new Date(date).toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: '2-digit'
-  })
-}
-
-const addExercise = () => {
-  newWorkoutExercises.value.push({ name: '', sets: 3, reps: 10, weight: 0 })
-}
-
-const removeExercise = (index: number) => {
-  newWorkoutExercises.value.splice(index, 1)
-}
-
-const startFromTemplate = async (templateId: string) => {
-  await createWorkoutFromTemplate(templateId)
-  await loadWorkouts()
-}
-
-const saveNewWorkout = async () => {
-  const validExercises = newWorkoutExercises.value.filter(e => e.name.trim() !== '')
-
-  await createWorkout({
-    date: new Date(),
-    notes: newWorkoutNotes.value || undefined,
-    exercises: validExercises
-  })
-
-  // Reset form
-  showNewWorkout.value = false
-  newWorkoutNotes.value = ''
-  newWorkoutExercises.value = [{ name: '', sets: 3, reps: 10, weight: 0 }]
-
-  await loadWorkouts()
-}
-
-onMounted(async () => {
-  await loadTemplates()
-  await loadWorkouts()
-
-  // Animate page elements on mount
-  nextTick(() => {
-    // Animate header
-    gsap.from('.space-y-2', {
-      y: -20,
-      opacity: 0,
-      duration: 0.6,
-      ease: 'power2.out'
-    })
-
-    // Animate template cards
-    const templateCards = document.querySelectorAll('.grid.grid-cols-2 > button')
-    gsap.from(templateCards, {
-      scale: 0.8,
-      opacity: 0,
-      duration: 0.5,
-      stagger: 0.1,
-      ease: 'back.out(1.7)',
-      delay: 0.2
-    })
-
-    // Animate workout cards if they exist
-    const workoutCards = document.querySelectorAll('.space-y-3 > a')
-    if (workoutCards.length > 0) {
-      gsap.from(workoutCards, {
-        x: -30,
-        opacity: 0,
-        duration: 0.5,
-        stagger: 0.1,
-        ease: 'power2.out',
-        delay: 0.4
-      })
-    }
-  })
-})
-</script>
