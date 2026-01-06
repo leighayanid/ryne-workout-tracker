@@ -1,6 +1,6 @@
 import { loginSchema } from '~/server/utils/validation'
 import { verifyPassword, generateAccessToken, generateRefreshToken, createSession } from '~/server/utils/auth'
-import { prisma } from '~/server/utils/prisma'
+import prisma from '~/server/utils/prisma'
 import { logger } from '~/server/utils/logger'
 import { rateLimit, rateLimitPresets } from '~/server/utils/rateLimit'
 

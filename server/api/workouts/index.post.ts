@@ -1,6 +1,6 @@
 import { requireAuth } from '~/server/utils/auth'
 import { createWorkoutSchema } from '~/server/utils/validation'
-import { prisma } from '~/server/utils/prisma'
+import prisma from '~/server/utils/prisma'
 import { logger } from '~/server/utils/logger'
 import { rateLimit, rateLimitPresets } from '~/server/utils/rateLimit'
 

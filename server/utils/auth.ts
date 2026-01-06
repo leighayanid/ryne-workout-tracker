@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import type { H3Event } from 'h3'
-import { prisma } from './prisma'
+import prisma from './prisma'
 
 const SALT_ROUNDS = 12
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
