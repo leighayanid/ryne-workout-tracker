@@ -1,5 +1,5 @@
-import { deleteSession } from '~/server/utils/auth'
-import { logger } from '~/server/utils/logger'
+import { deleteSession } from '~~/server/utils/auth'
+import { logger } from '~~/server/utils/logger'
 
 export default defineEventHandler(async (event) => {
   try {

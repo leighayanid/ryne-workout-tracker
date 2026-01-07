@@ -1,8 +1,8 @@
-import { signupSchema } from '~/server/utils/validation'
-import { hashPassword, generateAccessToken, generateRefreshToken, createSession } from '~/server/utils/auth'
-import prisma from '~/server/utils/prisma'
-import { logger } from '~/server/utils/logger'
-import { rateLimit, rateLimitPresets } from '~/server/utils/rateLimit'
+import { signupSchema } from '~~/server/utils/validation'
+import { hashPassword, generateAccessToken, generateRefreshToken, createSession } from '~~/server/utils/auth'
+import prisma from '~~/server/utils/prisma'
+import { logger } from '~~/server/utils/logger'
+import { rateLimit, rateLimitPresets } from '~~/server/utils/rateLimit'
 
 export default defineEventHandler(async (event) => {
   // Rate limiting

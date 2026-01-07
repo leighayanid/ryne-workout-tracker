@@ -1,5 +1,5 @@
-import { requireAuth } from '~/server/utils/auth'
-import { logger } from '~/server/utils/logger'
+import { requireAuth } from '~~/server/utils/auth'
+import { logger } from '~~/server/utils/logger'
 
 export default defineEventHandler(async (event) => {
   try {
