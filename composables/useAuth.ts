@@ -26,10 +26,10 @@ export const useAuth = () => {
 
       // Store in localStorage
       if (process.client) {
-        localStorage.setItem('gymnote_user', JSON.stringify(user.value))
-        localStorage.setItem('gymnote_access_token', accessToken.value!)
-        localStorage.setItem('gymnote_refresh_token', refreshToken.value!)
-        localStorage.setItem('gymnote_authenticated', 'true')
+        localStorage.setItem('ryne_user', JSON.stringify(user.value))
+        localStorage.setItem('ryne_access_token', accessToken.value!)
+        localStorage.setItem('ryne_refresh_token', refreshToken.value!)
+        localStorage.setItem('ryne_authenticated', 'true')
       }
     } catch (error: any) {
       console.error('Login failed:', error)
@@ -70,11 +70,11 @@ export const useAuth = () => {
 
       // Store in localStorage
       if (process.client) {
-        localStorage.setItem('gymnote_user', JSON.stringify(user.value))
-        localStorage.setItem('gymnote_access_token', accessToken.value!)
-        localStorage.setItem('gymnote_refresh_token', refreshToken.value!)
-        localStorage.setItem('gymnote_authenticated', 'true')
-        localStorage.removeItem('gymnote_seen_welcome')
+        localStorage.setItem('ryne_user', JSON.stringify(user.value))
+        localStorage.setItem('ryne_access_token', accessToken.value!)
+        localStorage.setItem('ryne_refresh_token', refreshToken.value!)
+        localStorage.setItem('ryne_authenticated', 'true')
+        localStorage.removeItem('ryne_seen_welcome')
       }
     } catch (error: any) {
       console.error('Signup failed:', error)
@@ -112,11 +112,11 @@ export const useAuth = () => {
 
       // Clear localStorage
       if (process.client) {
-        localStorage.removeItem('gymnote_user')
-        localStorage.removeItem('gymnote_access_token')
-        localStorage.removeItem('gymnote_refresh_token')
-        localStorage.removeItem('gymnote_authenticated')
-        localStorage.removeItem('gymnote_seen_welcome')
+        localStorage.removeItem('ryne_user')
+        localStorage.removeItem('ryne_access_token')
+        localStorage.removeItem('ryne_refresh_token')
+        localStorage.removeItem('ryne_authenticated')
+        localStorage.removeItem('ryne_seen_welcome')
       }
     }
   }
@@ -124,7 +124,7 @@ export const useAuth = () => {
   const markWelcomeSeen = () => {
     hasSeenWelcome.value = true
     if (process.client) {
-      localStorage.setItem('gymnote_seen_welcome', 'true')
+      localStorage.setItem('ryne_seen_welcome', 'true')
     }
   }
 
@@ -154,7 +154,7 @@ export const useAuth = () => {
         }
 
         if (process.client) {
-          localStorage.setItem('gymnote_access_token', accessToken.value!)
+          localStorage.setItem('ryne_access_token', accessToken.value!)
         }
 
         return true
@@ -170,11 +170,11 @@ export const useAuth = () => {
 
   const initAuth = () => {
     if (process.client) {
-      const storedUser = localStorage.getItem('gymnote_user')
-      const storedAccessToken = localStorage.getItem('gymnote_access_token')
-      const storedRefreshToken = localStorage.getItem('gymnote_refresh_token')
-      const storedAuth = localStorage.getItem('gymnote_authenticated')
-      const storedWelcome = localStorage.getItem('gymnote_seen_welcome')
+      const storedUser = localStorage.getItem('ryne_user')
+      const storedAccessToken = localStorage.getItem('ryne_access_token')
+      const storedRefreshToken = localStorage.getItem('ryne_refresh_token')
+      const storedAuth = localStorage.getItem('ryne_authenticated')
+      const storedWelcome = localStorage.getItem('ryne_seen_welcome')
 
       if (storedUser && storedAuth === 'true' && storedAccessToken) {
         user.value = JSON.parse(storedUser)
