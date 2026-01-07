@@ -1,4 +1,4 @@
-# Gymnote API Documentation
+# Ryne API Documentation
 
 ## Table of Contents
 
@@ -453,7 +453,7 @@ Date,Exercise,Sets,Reps,Weight,Notes
 **Headers (CSV):**
 ```
 Content-Type: text/csv
-Content-Disposition: attachment; filename="gymnote-export-{timestamp}.csv"
+Content-Disposition: attachment; filename="ryne-export-{timestamp}.csv"
 ```
 
 **Errors:**
@@ -637,5 +637,5 @@ When rate limit is exceeded, the API returns:
 
 For API support or to report issues:
 - Submit feedback via `/api/feedback`
-- Email: support@gymnote.app (example)
-- GitHub: [repository issues](https://github.com/yourusername/gymnote/issues)
+- Email: support@ryne.app (example)
+- GitHub: [repository issues](https://github.com/yourusername/ryne/issues)

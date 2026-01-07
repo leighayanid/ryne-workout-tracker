@@ -1,6 +1,6 @@
-# Gymnote - Production Deployment Guide
+# Ryne - Production Deployment Guide
 
-This guide will walk you through deploying Gymnote to production.
+This guide will walk you through deploying Ryne to production.
 
 ## Table of Contents
 
@@ -34,8 +34,8 @@ Before deploying, ensure you have:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/gymnote.git
-cd gymnote
+git clone https://github.com/yourusername/ryne.git
+cd ryne
 ```
 
 ### 2. Install Dependencies
@@ -66,7 +66,7 @@ JWT_SECRET="your-super-secret-jwt-key-min-32-characters-long"
 # Application
 NODE_ENV="production"
 NUXT_PUBLIC_API_BASE="/api"
-NUXT_PUBLIC_APP_NAME="Gymnote"
+NUXT_PUBLIC_APP_NAME="Ryne"
 NUXT_PUBLIC_APP_VERSION="1.0.0"
 
 # Logging
@@ -647,7 +647,7 @@ For deployment support:
 
 - Documentation: See `API_DOCUMENTATION.md`
 - Issues: GitHub Issues
-- Email: support@gymnote.app
+- Email: support@ryne.app
 - Community: Discord/Slack
 
 ---
@@ -667,4 +667,4 @@ After successful deployment:
 
 ---
 
-**Congratulations!** 🎉 Your production-ready Gymnote app is now deployed!
+**Congratulations!** 🎉 Your production-ready Ryne app is now deployed!

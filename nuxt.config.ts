@@ -15,7 +15,7 @@ export default defineNuxtConfig({
 
     // Public keys (exposed to client)
     public: {
-      appName: 'Gymnote',
+      appName: 'Ryne',
       appVersion: '1.0.0',
       apiBase: process.env.NUXT_PUBLIC_API_BASE || '/api',
     },
@@ -52,8 +52,8 @@ export default defineNuxtConfig({
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
-      name: 'Gymnote - Offline Workout Tracker',
-      short_name: 'Gymnote',
+      name: 'Ryne - Offline Workout Tracker',
+      short_name: 'Ryne',
       description: 'Simple offline-first workout tracking app',
       theme_color: '#6f58c9',
       background_color: '#ffffff',

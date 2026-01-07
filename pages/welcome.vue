@@ -20,7 +20,7 @@
                 </svg>
               </div>
               <h1 ref="slide1Title" class="text-5xl md:text-6xl font-bold text-white">
-                Welcome to Gymnote
+                Welcome to Ryne
               </h1>
               <p ref="slide1Subtitle" class="text-xl md:text-2xl text-primary-200 max-w-2xl mx-auto">
                 Your ultimate fitness companion, built for athletes who never settle

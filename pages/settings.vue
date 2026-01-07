@@ -62,7 +62,7 @@ const handleManualSync = async () => {
 
 const handleClearData = async () => {
   // Clear IndexedDB
-  indexedDB.deleteDatabase('gymnote-db')
+  indexedDB.deleteDatabase('ryne-db')
 
   // Reload
   window.location.reload()
@@ -240,10 +240,10 @@ onMounted(async () => {
         <div class="p-4 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-950 dark:to-primary-900 rounded-lg border border-primary-200 dark:border-primary-800">
           <div class="flex items-center gap-3 mb-2">
             <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center">
-              <span class="text-white font-bold text-xl">G</span>
+              <span class="text-white font-bold text-xl">R</span>
             </div>
             <div>
-              <div class="font-bold text-gray-900 dark:text-white">Gymnote</div>
+              <div class="font-bold text-gray-900 dark:text-white">Ryne</div>
               <div class="text-sm text-gray-600 dark:text-gray-400">Version 1.0.0</div>
             </div>
           </div>

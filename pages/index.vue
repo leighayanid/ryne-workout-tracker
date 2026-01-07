@@ -5,9 +5,9 @@
       <div class="max-w-7xl mx-auto flex justify-between items-center">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 bg-white flex items-center justify-center">
-            <span class="text-xl font-black text-black">G</span>
+            <span class="text-xl font-black text-black">R</span>
           </div>
-          <span class="text-xl font-bold tracking-tight">GYMNOTE</span>
+          <span class="text-xl font-bold tracking-tight">RYNE</span>
         </div>
         <button 
           @click="showAuthModal = true; authMode = 'login'"
@@ -48,7 +48,7 @@
 
         <div class="order-1 lg:order-2 relative perspective-1000">
           <div ref="heroImage" class="relative z-10 transform-gpu preserve-3d">
-            <img src="/hero-app-mockup.png" alt="Gymnote App Interface" class="w-full max-w-md mx-auto drop-shadow-2xl rounded-[2rem] border-8 border-gray-900/50" />
+            <img src="/hero-app-mockup.png" alt="Ryne App Interface" class="w-full max-w-md mx-auto drop-shadow-2xl rounded-[2rem] border-8 border-gray-900/50" />
             <!-- Floating Elements -->
             <div class="absolute -right-10 top-1/4 bg-gray-900/90 backdrop-blur-md p-4 rounded-xl border border-white/10 shadow-2xl floating-card">
               <div class="flex items-center gap-3">

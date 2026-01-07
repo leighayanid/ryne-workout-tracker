@@ -39,10 +39,10 @@
         <div class="p-6 border-b border-gray-200 dark:border-gray-800">
           <div class="flex items-center gap-3">
             <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center">
-              <span class="text-white font-bold text-xl">G</span>
+              <span class="text-white font-bold text-xl">R</span>
             </div>
             <div>
-              <h1 class="text-xl font-bold text-gray-900 dark:text-white">Gymnote</h1>
+              <h1 class="text-xl font-bold text-gray-900 dark:text-white">Ryne</h1>
               <p class="text-xs text-gray-500 dark:text-gray-400">Track your fitness</p>
             </div>
           </div>

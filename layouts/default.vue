@@ -119,7 +119,7 @@ const pageTitle = computed(() => {
     '/history': 'Workout History',
     '/settings': 'Settings'
   }
-  return titles[route.path] || 'Gymnote'
+  return titles[route.path] || 'Ryne'
 })
 
 onMounted(() => {

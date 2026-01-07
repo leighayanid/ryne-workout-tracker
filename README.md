@@ -1,4 +1,4 @@
-# Gymnote - Production-Ready Offline-First Workout Tracker
+# Ryne - Production-Ready Offline-First Workout Tracker
 
 A production-ready, secure, and fully-tested Progressive Web App (PWA) for tracking workouts. Built with Nuxt 3, TypeScript, Tailwind CSS, and IndexedDB for reliable offline functionality.
 

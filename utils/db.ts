@@ -1,6 +1,6 @@
 import type { LocalWorkout, LocalExercise, SyncQueueItem, WorkoutTemplate } from '~/types'
 
-const DB_NAME = 'gymnote-db'
+const DB_NAME = 'ryne-db'
 const DB_VERSION = 2 // Incremented for exercise cache
 
 export class LocalDB {

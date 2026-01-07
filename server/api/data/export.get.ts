@@ -59,14 +59,14 @@ export default defineEventHandler(async (event) => {
       const csv = csvHeader + csvRows
 
       setHeader(event, 'Content-Type', 'text/csv')
-      setHeader(event, 'Content-Disposition', `attachment; filename="gymnote-export-${Date.now()}.csv"`)
+      setHeader(event, 'Content-Disposition', `attachment; filename="ryne-export-${Date.now()}.csv"`)
 
       return csv
     }
 
     // Default: JSON format
     setHeader(event, 'Content-Type', 'application/json')
-    setHeader(event, 'Content-Disposition', `attachment; filename="gymnote-export-${Date.now()}.json"`)
+    setHeader(event, 'Content-Disposition', `attachment; filename="ryne-export-${Date.now()}.json"`)
 
     return exportData
   } catch (error: any) {
