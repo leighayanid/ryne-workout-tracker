@@ -84,5 +84,5 @@ export const rateLimitPresets = {
   strict: { maxRequests: 10, windowMs: 60000 }, // 10 requests per minute
   moderate: { maxRequests: 30, windowMs: 60000 }, // 30 requests per minute
   lenient: { maxRequests: 100, windowMs: 60000 }, // 100 requests per minute
-  auth: { maxRequests: 5, windowMs: 60000 }, // 5 requests per minute for auth endpoints
+  auth: { maxRequests: 20, windowMs: 60000 }, // 20 requests per minute for auth endpoints
 }

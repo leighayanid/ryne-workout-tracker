@@ -4,7 +4,6 @@ import type { H3Event } from 'h3'
 import prisma from './prisma'
 
 const SALT_ROUNDS = 12
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
 const JWT_EXPIRES_IN = '7d'
 const REFRESH_TOKEN_EXPIRES_IN = '30d'
 
@@ -38,24 +37,27 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
  * Generate JWT access token
  */
 export function generateAccessToken(userId: string, email: string): string {
+  const config = useRuntimeConfig()
   const payload: JWTPayload = { userId, email, type: 'access' }
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN })
+  return jwt.sign(payload, config.jwtSecret, { expiresIn: JWT_EXPIRES_IN })
 }
 
 /**
  * Generate JWT refresh token
  */
 export function generateRefreshToken(userId: string, email: string): string {
+  const config = useRuntimeConfig()
   const payload: JWTPayload = { userId, email, type: 'refresh' }
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: REFRESH_TOKEN_EXPIRES_IN })
+  return jwt.sign(payload, config.jwtSecret, { expiresIn: REFRESH_TOKEN_EXPIRES_IN })
 }
 
 /**
  * Verify JWT token
  */
 export function verifyToken(token: string): JWTPayload | null {
+  const config = useRuntimeConfig()
   try {
-    return jwt.verify(token, JWT_SECRET) as JWTPayload
+    return jwt.verify(token, config.jwtSecret) as JWTPayload
   } catch (error) {
     return null
   }

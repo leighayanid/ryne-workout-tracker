@@ -132,6 +132,42 @@ export const useAuth = () => {
     return accessToken.value
   }
 
+  const refresh = async () => {
+    try {
+      if (refreshToken.value) {
+        const response = await $fetch('/api/auth/refresh', {
+          method: 'POST',
+          body: {
+            token: refreshToken.value
+          }
+        })
+
+        accessToken.value = (response as any).accessToken
+
+        // Update user data if provided
+        if ((response as any).user) {
+          user.value = {
+            id: (response as any).user.id,
+            name: (response as any).user.name,
+            email: (response as any).user.email
+          }
+        }
+
+        if (process.client) {
+          localStorage.setItem('gymnote_access_token', accessToken.value!)
+        }
+
+        return true
+      }
+      return false
+    } catch (error) {
+      console.error('Refresh token failed:', error)
+      // If refresh fails, log out
+      logout()
+      return false
+    }
+  }
+
   const initAuth = () => {
     if (process.client) {
       const storedUser = localStorage.getItem('gymnote_user')
@@ -145,6 +181,9 @@ export const useAuth = () => {
         accessToken.value = storedAccessToken
         refreshToken.value = storedRefreshToken
         isAuthenticated.value = true
+
+        // Optionally try to refresh token on init to ensure validity
+        // refresh()
       }
 
       if (storedWelcome === 'true') {
@@ -161,6 +200,7 @@ export const useAuth = () => {
     login,
     signup,
     logout,
+    refresh,
     markWelcomeSeen,
     getAccessToken,
     initAuth
