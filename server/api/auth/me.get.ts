@@ -1,15 +1,17 @@
-import { requireAuth } from '~~/server/utils/auth'
-import { logger } from '~~/server/utils/logger'
+import { getAuthUser } from '~~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
-  try {
-    const user = await requireAuth(event)
+  const user = await getAuthUser(event)
 
-    return {
-      user,
-    }
-  } catch (error: any) {
-    logger.error({ error: error.message }, 'Get current user error')
-    throw error
+  if (!user) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized',
+      message: 'Not authenticated',
+    })
+  }
+
+  return {
+    user,
   }
 })

@@ -1,208 +1,229 @@
+import { useLocalStorage } from '@vueuse/core'
+
+export interface User {
+  id: string
+  email: string
+  name: string
+}
+
+const DB_NAME = 'ryne_db'
+const DB_VERSION = 1
+const USER_STORE = 'user'
+
+/**
+ * IndexedDB helper for offline-first user storage
+ */
+class AuthDB {
+  private db: IDBDatabase | null = null
+
+  async init(): Promise<void> {
+    if (this.db) return
+
+    return new Promise((resolve, reject) => {
+      if (typeof window === 'undefined') {
+        resolve()
+        return
+      }
+
+      const request = indexedDB.open(DB_NAME, DB_VERSION)
+
+      request.onerror = () => reject(request.error)
+      request.onsuccess = () => {
+        this.db = request.result
+        resolve()
+      }
+
+      request.onupgradeneeded = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result
+
+        // Create user store if it doesn't exist
+        if (!db.objectStoreNames.contains(USER_STORE)) {
+          db.createObjectStore(USER_STORE)
+        }
+      }
+    })
+  }
+
+  async setUser(user: User | null): Promise<void> {
+    if (!this.db) await this.init()
+    if (!this.db) return
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([USER_STORE], 'readwrite')
+      const store = transaction.objectStore(USER_STORE)
+
+      const request = user
+        ? store.put(user, 'current')
+        : store.delete('current')
+
+      request.onerror = () => reject(request.error)
+      request.onsuccess = () => resolve()
+    })
+  }
+
+  async getUser(): Promise<User | null> {
+    if (!this.db) await this.init()
+    if (!this.db) return null
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([USER_STORE], 'readonly')
+      const store = transaction.objectStore(USER_STORE)
+      const request = store.get('current')
+
+      request.onerror = () => reject(request.error)
+      request.onsuccess = () => resolve(request.result || null)
+    })
+  }
+
+  async clear(): Promise<void> {
+    if (!this.db) await this.init()
+    if (!this.db) return
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([USER_STORE], 'readwrite')
+      const store = transaction.objectStore(USER_STORE)
+      const request = store.clear()
+
+      request.onerror = () => reject(request.error)
+      request.onsuccess = () => resolve()
+    })
+  }
+}
+
+const authDB = new AuthDB()
+
 export const useAuth = () => {
-  const user = useState<{ id: string; name: string; email: string } | null>('user', () => null)
-  const isAuthenticated = useState('isAuthenticated', () => false)
-  const hasSeenWelcome = useState('hasSeenWelcome', () => false)
-  const accessToken = useState<string | null>('accessToken', () => null)
-  const refreshToken = useState<string | null>('refreshToken', () => null)
+  const user = useState<User | null>('auth_user', () => null)
+  const isLoading = useState<boolean>('auth_loading', () => true)
+  const isAuthenticated = computed(() => !!user.value)
 
-  const login = async (email: string, password: string) => {
-    try {
-      const response = await $fetch('/api/auth/login', {
-        method: 'POST',
-        body: {
-          email,
-          password
-        }
-      })
-
-      user.value = {
-        id: (response as any).user.id,
-        name: (response as any).user.name,
-        email: (response as any).user.email
-      }
-      accessToken.value = (response as any).accessToken
-      refreshToken.value = (response as any).refreshToken
-      isAuthenticated.value = true
-
-      // Store in localStorage
-      if (process.client) {
-        localStorage.setItem('ryne_user', JSON.stringify(user.value))
-        localStorage.setItem('ryne_access_token', accessToken.value!)
-        localStorage.setItem('ryne_refresh_token', refreshToken.value!)
-        localStorage.setItem('ryne_authenticated', 'true')
-      }
-    } catch (error: any) {
-      console.error('Login failed:', error)
-      // Enhance error with user-friendly message if not already present
-      if (error?.statusCode === 401) {
-        error.data = error.data || {}
-        error.data.message = error.data.message || 'Invalid email or password'
-      } else if (error?.statusCode === 400) {
-        error.data = error.data || {}
-        error.data.message = error.data.message || 'Please provide valid email and password'
-      } else if (!error?.data?.message && !error?.message) {
-        error.message = 'Unable to connect to server. Please check your connection.'
-      }
-      throw error
-    }
-  }
-
-  const signup = async (name: string, email: string, password: string) => {
-    try {
-      const response = await $fetch('/api/auth/signup', {
-        method: 'POST',
-        body: {
-          name,
-          email,
-          password
-        }
-      })
-
-      user.value = {
-        id: (response as any).user.id,
-        name: (response as any).user.name,
-        email: (response as any).user.email
-      }
-      accessToken.value = (response as any).accessToken
-      refreshToken.value = (response as any).refreshToken
-      isAuthenticated.value = true
-      hasSeenWelcome.value = false
-
-      // Store in localStorage
-      if (process.client) {
-        localStorage.setItem('ryne_user', JSON.stringify(user.value))
-        localStorage.setItem('ryne_access_token', accessToken.value!)
-        localStorage.setItem('ryne_refresh_token', refreshToken.value!)
-        localStorage.setItem('ryne_authenticated', 'true')
-        localStorage.removeItem('ryne_seen_welcome')
-      }
-    } catch (error: any) {
-      console.error('Signup failed:', error)
-      // Enhance error with user-friendly message if not already present
-      if (error?.statusCode === 409) {
-        error.data = error.data || {}
-        error.data.message = error.data.message || 'An account with this email already exists'
-      } else if (error?.statusCode === 400) {
-        error.data = error.data || {}
-        error.data.message = error.data.message || 'Please provide valid information'
-      } else if (!error?.data?.message && !error?.message) {
-        error.message = 'Unable to connect to server. Please check your connection.'
-      }
-      throw error
-    }
-  }
-
-  const logout = async () => {
-    try {
-      if (refreshToken.value) {
-        await $fetch('/api/auth/logout', {
-          method: 'POST',
-          body: {
-            token: refreshToken.value
-          }
-        })
-      }
-    } catch (error) {
-      console.error('Logout failed:', error)
-    } finally {
-      user.value = null
-      accessToken.value = null
-      refreshToken.value = null
-      isAuthenticated.value = false
-
-      // Clear localStorage
-      if (process.client) {
-        localStorage.removeItem('ryne_user')
-        localStorage.removeItem('ryne_access_token')
-        localStorage.removeItem('ryne_refresh_token')
-        localStorage.removeItem('ryne_authenticated')
-        localStorage.removeItem('ryne_seen_welcome')
-      }
-    }
-  }
+  // Welcome functionality
+  const hasSeenWelcome = useLocalStorage<boolean>('ryne_welcome_seen', false)
 
   const markWelcomeSeen = () => {
     hasSeenWelcome.value = true
-    if (process.client) {
-      localStorage.setItem('ryne_seen_welcome', 'true')
-    }
   }
 
-  const getAccessToken = () => {
-    return accessToken.value
-  }
-
-  const refresh = async () => {
+  /**
+   * Initialize auth state from IndexedDB (offline-first)
+   */
+  const init = async () => {
     try {
-      if (refreshToken.value) {
-        const response = await $fetch('/api/auth/refresh', {
-          method: 'POST',
-          body: {
-            token: refreshToken.value
-          }
-        })
-
-        accessToken.value = (response as any).accessToken
-
-        // Update user data if provided
-        if ((response as any).user) {
-          user.value = {
-            id: (response as any).user.id,
-            name: (response as any).user.name,
-            email: (response as any).user.email
-          }
-        }
-
-        if (process.client) {
-          localStorage.setItem('ryne_access_token', accessToken.value!)
-        }
-
-        return true
+      // First, try to load user from IndexedDB (works offline)
+      const cachedUser = await authDB.getUser()
+      if (cachedUser) {
+        user.value = cachedUser
       }
-      return false
+
+      // Then, if online, verify with server
+      if (typeof navigator !== 'undefined' && navigator.onLine) {
+        await fetchCurrentUser()
+      }
     } catch (error) {
-      console.error('Refresh token failed:', error)
-      // If refresh fails, log out
-      logout()
-      return false
+      console.error('Auth init error:', error)
+    } finally {
+      isLoading.value = false
     }
   }
 
-  const initAuth = () => {
-    if (process.client) {
-      const storedUser = localStorage.getItem('ryne_user')
-      const storedAccessToken = localStorage.getItem('ryne_access_token')
-      const storedRefreshToken = localStorage.getItem('ryne_refresh_token')
-      const storedAuth = localStorage.getItem('ryne_authenticated')
-      const storedWelcome = localStorage.getItem('ryne_seen_welcome')
-
-      if (storedUser && storedAuth === 'true' && storedAccessToken) {
-        user.value = JSON.parse(storedUser)
-        accessToken.value = storedAccessToken
-        refreshToken.value = storedRefreshToken
-        isAuthenticated.value = true
-
-        // Optionally try to refresh token on init to ensure validity
-        // refresh()
+  /**
+   * Fetch current user from server and update cache
+   */
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await $fetch<{ user: User }>('/api/auth/me')
+      user.value = response.user
+      await authDB.setUser(response.user)
+    } catch (error: any) {
+      if (error?.statusCode === 401) {
+        // Not authenticated, clear cache
+        user.value = null
+        await authDB.clear()
       }
+    }
+  }
 
-      if (storedWelcome === 'true') {
-        hasSeenWelcome.value = true
+  /**
+   * Login with email and password
+   */
+  const login = async (email: string, password: string) => {
+    try {
+      const response = await $fetch<{ user: User }>('/api/auth/login', {
+        method: 'POST',
+        body: { email, password },
+      })
+
+      user.value = response.user
+      await authDB.setUser(response.user)
+
+      return response.user
+    } catch (error: any) {
+      console.error('Login error:', error)
+      throw new Error(error?.data?.message || 'Login failed')
+    }
+  }
+
+  /**
+   * Signup with name, email, and password
+   */
+  const signup = async (name: string, email: string, password: string) => {
+    try {
+      const response = await $fetch<{ user: User }>('/api/auth/signup', {
+        method: 'POST',
+        body: { name, email, password },
+      })
+
+      user.value = response.user
+      await authDB.setUser(response.user)
+
+      return response.user
+    } catch (error: any) {
+      console.error('Signup error:', error)
+      throw new Error(error?.data?.message || 'Signup failed')
+    }
+  }
+
+  /**
+   * Logout
+   */
+  const logout = async () => {
+    try {
+      await $fetch('/api/auth/logout', {
+        method: 'POST',
+      })
+    } catch (error) {
+      console.error('Logout error:', error)
+    } finally {
+      // Always clear local state, even if server request fails
+      user.value = null
+      await authDB.clear()
+
+      // Redirect to landing page
+      if (typeof window !== 'undefined') {
+        window.location.href = '/'
       }
+    }
+  }
+
+  /**
+   * Refresh user data from server (when online)
+   */
+  const refresh = async () => {
+    if (typeof navigator !== 'undefined' && navigator.onLine) {
+      await fetchCurrentUser()
     }
   }
 
   return {
-    user,
+    user: readonly(user),
+    isLoading: readonly(isLoading),
     isAuthenticated,
     hasSeenWelcome,
-    accessToken,
+    markWelcomeSeen,
+    init,
     login,
     signup,
     logout,
     refresh,
-    markWelcomeSeen,
-    getAccessToken,
-    initAuth
   }
 }

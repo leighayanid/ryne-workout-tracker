@@ -8,12 +8,11 @@ export default defineNuxtConfig({
 
   modules: [
     '@nuxtjs/tailwindcss',
-    '@vite-pwa/nuxt'
+    '@vite-pwa/nuxt',
   ],
 
   runtimeConfig: {
     // Private keys (only available server-side)
-    jwtSecret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
     databaseUrl: process.env.DATABASE_URL,
 
     // Public keys (exposed to client)
@@ -27,15 +26,6 @@ export default defineNuxtConfig({
   // Security headers
   nitro: {
     routeRules: {
-      '/**': {
-        headers: {
-          'X-Content-Type-Options': 'nosniff',
-          'X-Frame-Options': 'DENY',
-          'X-XSS-Protection': '1; mode=block',
-          'Referrer-Policy': 'strict-origin-when-cross-origin',
-          'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
-        },
-      },
       '/api/**': {
         cors: true,
         headers: {

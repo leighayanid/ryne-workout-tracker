@@ -1,5 +1,5 @@
 import { loginSchema } from '~~/server/utils/validation'
-import { verifyPassword, generateAccessToken, generateRefreshToken, createSession } from '~~/server/utils/auth'
+import { verifyPassword, createSession, setSessionCookie } from '~~/server/utils/auth'
 import prisma from '~~/server/utils/prisma'
 import { logger } from '~~/server/utils/logger'
 import { rateLimit, rateLimitPresets } from '~~/server/utils/rateLimit'
@@ -30,7 +30,6 @@ export default defineEventHandler(async (event) => {
     const isValidPassword = await verifyPassword(validatedData.password, user.password)
 
     if (!isValidPassword) {
-      logger.warn({ email: validatedData.email }, 'Failed login attempt')
       throw createError({
         statusCode: 401,
         statusMessage: 'Unauthorized',
@@ -38,13 +37,11 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Generate tokens
-    const accessToken = generateAccessToken(user.id, user.email)
-    const refreshToken = generateRefreshToken(user.id, user.email)
+    // Create session
+    const sessionToken = await createSession(user.id)
 
-    // Store refresh token session
-    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
-    await createSession(user.id, refreshToken, expiresAt)
+    // Set session cookie
+    setSessionCookie(event, sessionToken)
 
     logger.info({ userId: user.id, email: user.email }, 'User logged in successfully')
 
@@ -53,10 +50,7 @@ export default defineEventHandler(async (event) => {
         id: user.id,
         email: user.email,
         name: user.name,
-        createdAt: user.createdAt,
       },
-      accessToken,
-      refreshToken,
     }
   } catch (error: any) {
     logger.error({ error: error.message }, 'Login error')

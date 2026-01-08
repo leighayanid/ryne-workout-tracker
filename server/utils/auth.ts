@@ -1,17 +1,11 @@
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
 import type { H3Event } from 'h3'
+import { randomBytes } from 'crypto'
 import prisma from './prisma'
 
 const SALT_ROUNDS = 12
-const JWT_EXPIRES_IN = '7d'
-const REFRESH_TOKEN_EXPIRES_IN = '30d'
-
-export interface JWTPayload {
-  userId: string
-  email: string
-  type: 'access' | 'refresh'
-}
+const SESSION_DURATION_MS = 30 * 24 * 60 * 60 * 1000 // 30 days
+const COOKIE_NAME = 'ryne_session'
 
 export interface AuthUser {
   id: string
@@ -34,62 +28,131 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 /**
- * Generate JWT access token
+ * Generate a secure random session token
  */
-export function generateAccessToken(userId: string, email: string): string {
-  const config = useRuntimeConfig()
-  const payload: JWTPayload = { userId, email, type: 'access' }
-  return jwt.sign(payload, config.jwtSecret, { expiresIn: JWT_EXPIRES_IN })
+export function generateSessionToken(): string {
+  return randomBytes(32).toString('hex')
 }
 
 /**
- * Generate JWT refresh token
+ * Create a new session for a user
  */
-export function generateRefreshToken(userId: string, email: string): string {
-  const config = useRuntimeConfig()
-  const payload: JWTPayload = { userId, email, type: 'refresh' }
-  return jwt.sign(payload, config.jwtSecret, { expiresIn: REFRESH_TOKEN_EXPIRES_IN })
+export async function createSession(userId: string): Promise<string> {
+  const token = generateSessionToken()
+  const expiresAt = new Date(Date.now() + SESSION_DURATION_MS)
+
+  await prisma.session.create({
+    data: {
+      userId,
+      token,
+      expiresAt,
+      lastActiveAt: new Date(),
+    },
+  })
+
+  return token
 }
 
 /**
- * Verify JWT token
+ * Get session from token
  */
-export function verifyToken(token: string): JWTPayload | null {
-  const config = useRuntimeConfig()
-  try {
-    return jwt.verify(token, config.jwtSecret) as JWTPayload
-  } catch (error) {
+export async function getSession(token: string) {
+  const session = await prisma.session.findUnique({
+    where: { token },
+    include: {
+      user: {
+        select: {
+          id: true,
+          email: true,
+          name: true,
+        },
+      },
+    },
+  })
+
+  if (!session) {
     return null
   }
+
+  // Check if session is expired
+  if (session.expiresAt < new Date()) {
+    await prisma.session.delete({ where: { id: session.id } })
+    return null
+  }
+
+  // Update last active time (every 5 minutes)
+  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
+  if (session.lastActiveAt < fiveMinutesAgo) {
+    await prisma.session.update({
+      where: { id: session.id },
+      data: { lastActiveAt: new Date() },
+    })
+  }
+
+  return session
 }
 
 /**
- * Get authenticated user from request
+ * Delete a session
+ */
+export async function deleteSession(token: string): Promise<void> {
+  await prisma.session.deleteMany({
+    where: { token },
+  })
+}
+
+/**
+ * Delete all sessions for a user
+ */
+export async function deleteUserSessions(userId: string): Promise<void> {
+  await prisma.session.deleteMany({
+    where: { userId },
+  })
+}
+
+/**
+ * Get authenticated user from request cookie
  */
 export async function getAuthUser(event: H3Event): Promise<AuthUser | null> {
-  const authHeader = getHeader(event, 'authorization')
+  const token = getCookie(event, COOKIE_NAME)
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  if (!token) {
     return null
   }
 
-  const token = authHeader.substring(7)
-  const payload = verifyToken(token)
+  const session = await getSession(token)
 
-  if (!payload || payload.type !== 'access') {
+  if (!session) {
+    // Clear invalid cookie
+    deleteCookie(event, COOKIE_NAME)
     return null
   }
 
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: payload.userId },
-      select: { id: true, email: true, name: true },
-    })
-
-    return user
-  } catch (error) {
-    return null
+  return {
+    id: session.user.id,
+    email: session.user.email,
+    name: session.user.name,
   }
+}
+
+/**
+ * Set session cookie
+ */
+export function setSessionCookie(event: H3Event, token: string): void {
+  setCookie(event, COOKIE_NAME, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: SESSION_DURATION_MS / 1000, // maxAge is in seconds
+    path: '/',
+  })
+}
+
+/**
+ * Clear session cookie
+ */
+export function clearSessionCookie(event: H3Event): void {
+  deleteCookie(event, COOKIE_NAME)
 }
 
 /**
@@ -108,49 +171,4 @@ export async function requireAuth(event: H3Event): Promise<AuthUser> {
   }
 
   return user
-}
-
-/**
- * Create or update a session token
- */
-export async function createSession(userId: string, token: string, expiresAt: Date) {
-  return prisma.session.create({
-    data: {
-      userId,
-      token,
-      expiresAt,
-    },
-  })
-}
-
-/**
- * Delete a session token
- */
-export async function deleteSession(token: string) {
-  return prisma.session.deleteMany({
-    where: { token },
-  })
-}
-
-/**
- * Clean up expired sessions
- */
-export async function cleanupExpiredSessions() {
-  return prisma.session.deleteMany({
-    where: {
-      expiresAt: {
-        lt: new Date(),
-      },
-    },
-  })
-}
-
-/**
- * Update session last active time
- */
-export async function updateSessionActivity(token: string) {
-  return prisma.session.updateMany({
-    where: { token },
-    data: { lastActiveAt: new Date() },
-  })
 }

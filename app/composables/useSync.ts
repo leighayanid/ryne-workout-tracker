@@ -84,19 +84,9 @@ export const useSync = () => {
 
   const syncCreateWorkout = async (item: SyncQueueItem) => {
     const workout = item.data
-    const { getAccessToken } = useAuth()
-    const token = getAccessToken()
-
-    if (!token) {
-      throw new Error('No access token available')
-    }
-
     // Send to server
     const response = await $fetch('/api/workouts', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
       body: {
         date: workout.date,
         notes: workout.notes,
@@ -140,19 +130,9 @@ export const useSync = () => {
       return syncCreateWorkout(item)
     }
 
-    const { getAccessToken } = useAuth()
-    const token = getAccessToken()
-
-    if (!token) {
-      throw new Error('No access token available')
-    }
-
     // Send to server
     await $fetch(`/api/workouts/${workout.serverId}`, {
       method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
       body: {
         date: workout.date,
         notes: workout.notes,
@@ -178,18 +158,8 @@ export const useSync = () => {
     const { serverId } = item.data
 
     if (serverId) {
-      const { getAccessToken } = useAuth()
-      const token = getAccessToken()
-
-      if (!token) {
-        throw new Error('No access token available')
-      }
-
       await $fetch(`/api/workouts/${serverId}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
       })
     }
   }

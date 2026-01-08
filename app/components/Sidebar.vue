@@ -170,11 +170,11 @@ const navItems = [
 const userInitials = computed(() => {
   if (!user.value) return ''
   return user.value.name
-    .split(' ')
+    ?.split(' ')
     .map(n => n[0])
     .join('')
     .toUpperCase()
-    .slice(0, 2)
+    .slice(0, 2) || ''
 })
 
 const weekStats = computed(() => {

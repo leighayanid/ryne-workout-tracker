@@ -11,31 +11,11 @@
 import { Toaster } from 'vue-sonner'
 
 const { initTheme, colorMode } = useTheme()
-const { initAuth, isAuthenticated, hasSeenWelcome } = useAuth()
+const { isAuthenticated, hasSeenWelcome } = useAuth()
 const router = useRouter()
 const route = useRoute()
 
 onMounted(() => {
   initTheme()
-  initAuth()
-
-  // Handle authentication routing
-  nextTick(() => {
-    const publicRoutes = ['/', '/welcome']
-    const isPublicRoute = publicRoutes.includes(route.path)
-
-    if (!isAuthenticated.value && !isPublicRoute) {
-      router.push('/')
-    } else if (isAuthenticated.value && !hasSeenWelcome.value && route.path !== '/welcome') {
-      router.push('/welcome')
-    }
-  })
-})
-
-// Watch for auth changes
-watch(isAuthenticated, (newVal) => {
-  if (!newVal && route.path !== '/') {
-    router.push('/')
-  }
 })
 </script>

@@ -1,5 +1,6 @@
 <template>
-  <div class="min-h-screen bg-[#050505] text-white overflow-x-hidden font-sans selection:bg-primary-500 selection:text-black">
+  <div
+    class="min-h-screen bg-[#050505] text-white overflow-x-hidden font-sans selection:bg-primary-500 selection:text-black">
     <!-- Navigation -->
     <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-6 mix-blend-difference">
       <div class="max-w-7xl mx-auto flex justify-between items-center">
@@ -9,10 +10,8 @@
           </div>
           <span class="text-xl font-bold tracking-tight">RYNE</span>
         </div>
-        <button 
-          @click="showAuthModal = true; authMode = 'login'"
-          class="text-sm font-bold uppercase tracking-widest hover:text-primary-500 transition-colors"
-        >
+        <button @click="showAuthModal = true; authMode = 'login'"
+          class="text-sm font-bold uppercase tracking-widest hover:text-primary-500 transition-colors">
           Login
         </button>
       </div>
@@ -22,12 +21,14 @@
     <section class="relative min-h-screen flex items-center pt-20">
       <div class="absolute inset-0 z-0">
         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505] to-[#050505] z-10"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(100,50,255,0.15),transparent_50%)]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(100,50,255,0.15),transparent_50%)]">
+        </div>
       </div>
 
       <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
         <div class="order-2 lg:order-1">
-          <h1 ref="heroHeadline" class="text-7xl md:text-8xl lg:text-[10rem] font-black leading-[0.85] tracking-tighter mb-8 mix-blend-overlay">
+          <h1 ref="heroHeadline"
+            class="text-6xl md:text-8xl lg:text-[10rem] font-black leading-[0.85] tracking-tighter mb-8 mix-blend-overlay">
             LIFT.<br>
             TRACK.<br>
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-purple-600">REPEAT.</span>
@@ -36,24 +37,28 @@
             The no-nonsense workout tracker for athletes who demand precision. Offline-first. Zero distractions.
           </p>
           <div ref="heroCTA" class="flex gap-6">
-            <button 
-              @click="showAuthModal = true; authMode = 'signup'"
-              class="group relative px-8 py-4 bg-white text-black font-bold text-lg overflow-hidden"
-            >
+            <button @click="showAuthModal = true; authMode = 'signup'"
+              class="group relative px-8 py-4 bg-white text-black font-bold text-lg overflow-hidden">
               <span class="relative z-10 group-hover:text-white transition-colors duration-300">START TRAINING</span>
-              <div class="absolute inset-0 bg-primary-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+              <div
+                class="absolute inset-0 bg-primary-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300">
+              </div>
             </button>
           </div>
         </div>
 
         <div class="order-1 lg:order-2 relative perspective-1000">
           <div ref="heroImage" class="relative z-10 transform-gpu preserve-3d">
-            <img src="/hero-app-mockup.png" alt="Ryne App Interface" class="w-full max-w-md mx-auto drop-shadow-2xl rounded-[2rem] border-8 border-gray-900/50" />
+            <img src="/hero-app-mockup.png" alt="Ryne App Interface"
+              class="w-full max-w-md mx-auto drop-shadow-2xl rounded-[2rem] border-8 border-gray-900/50" />
             <!-- Floating Elements -->
-            <div class="absolute -right-10 top-1/4 bg-gray-900/90 backdrop-blur-md p-4 rounded-xl border border-white/10 shadow-2xl floating-card">
+            <div
+              class="absolute -right-10 top-1/4 bg-gray-900/90 backdrop-blur-md p-4 rounded-xl border border-white/10 shadow-2xl floating-card">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-500">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
                 </div>
                 <div>
                   <div class="text-sm font-bold">New PR!</div>
@@ -76,12 +81,16 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[400px]">
           <!-- Card 1: Large Span -->
-          <div ref="bento1" class="md:col-span-2 bg-[#0A0A0A] rounded-3xl p-10 border border-white/5 relative overflow-hidden group hover:border-primary-500/30 transition-colors duration-500">
-            <div class="absolute inset-0 bg-gradient-to-br from-primary-900/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div ref="bento1"
+            class="md:col-span-2 bg-[#0A0A0A] rounded-3xl p-10 border border-white/5 relative overflow-hidden group hover:border-primary-500/30 transition-colors duration-500">
+            <div
+              class="absolute inset-0 bg-gradient-to-br from-primary-900/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+            </div>
             <div class="relative z-10 h-full flex flex-col justify-between">
               <div>
                 <h3 class="text-3xl font-black mb-4">Focus Mode</h3>
-                <p class="text-gray-400 text-lg max-w-md">Distraction-free logging interface designed for the gym floor. Large buttons, dark mode, quick inputs.</p>
+                <p class="text-gray-400 text-lg max-w-md">Distraction-free logging interface designed for the gym floor.
+                  Large buttons, dark mode, quick inputs.</p>
               </div>
               <div class="flex gap-4 opacity-50 grayscale group-hover:grayscale-0 transition-all duration-500">
                 <!-- Abstract UI elements -->
@@ -98,33 +107,44 @@
           </div>
 
           <!-- Card 2: Analytics -->
-          <div ref="bento2" class="bg-[#0A0A0A] rounded-3xl p-10 border border-white/5 relative overflow-hidden group hover:border-primary-500/30 transition-colors duration-500">
-             <div class="absolute top-0 right-0 p-10 opacity-20 group-hover:scale-110 transition-transform duration-700">
-               <svg class="w-32 h-32 text-primary-500" fill="currentColor" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
-             </div>
-             <div class="relative z-10 h-full flex flex-col justify-end">
-               <h3 class="text-3xl font-black mb-2">Analytics</h3>
-               <p class="text-gray-400">Vizualize your volume volume visualization and strength progression over time.</p>
-             </div>
+          <div ref="bento2"
+            class="bg-[#0A0A0A] rounded-3xl p-10 border border-white/5 relative overflow-hidden group hover:border-primary-500/30 transition-colors duration-500">
+            <div class="absolute top-0 right-0 p-10 opacity-20 group-hover:scale-110 transition-transform duration-700">
+              <svg class="w-32 h-32 text-primary-500" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z" />
+              </svg>
+            </div>
+            <div class="relative z-10 h-full flex flex-col justify-end">
+              <h3 class="text-3xl font-black mb-2">Analytics</h3>
+              <p class="text-gray-400">Vizualize your volume volume visualization and strength progression over time.
+              </p>
+            </div>
           </div>
 
           <!-- Card 3: Offline First -->
-          <div ref="bento3" class="bg-[#0A0A0A] rounded-3xl p-10 border border-white/5 relative overflow-hidden group hover:border-primary-500/30 transition-colors duration-500">
-             <div class="relative z-10">
-               <div class="w-16 h-16 rounded-2xl bg-gray-900 border border-white/10 flex items-center justify-center mb-8 group-hover:bg-primary-500/20 transition-colors duration-300">
-                 <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
-               </div>
-               <h3 class="text-3xl font-black mb-2">Offline First</h3>
-               <p class="text-gray-400">No signal? No problem. Data syncs automatically when you're back online.</p>
-             </div>
+          <div ref="bento3"
+            class="bg-[#0A0A0A] rounded-3xl p-10 border border-white/5 relative overflow-hidden group hover:border-primary-500/30 transition-colors duration-500">
+            <div class="relative z-10">
+              <div
+                class="w-16 h-16 rounded-2xl bg-gray-900 border border-white/10 flex items-center justify-center mb-8 group-hover:bg-primary-500/20 transition-colors duration-300">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                </svg>
+              </div>
+              <h3 class="text-3xl font-black mb-2">Offline First</h3>
+              <p class="text-gray-400">No signal? No problem. Data syncs automatically when you're back online.</p>
+            </div>
           </div>
 
           <!-- Card 4: Templates -->
-          <div ref="bento4" class="md:col-span-2 bg-[#0A0A0A] rounded-3xl p-10 border border-white/5 relative overflow-hidden group hover:border-primary-500/30 transition-colors duration-500 flex items-center">
+          <div ref="bento4"
+            class="md:col-span-2 bg-[#0A0A0A] rounded-3xl p-10 border border-white/5 relative overflow-hidden group hover:border-primary-500/30 transition-colors duration-500 flex items-center">
             <div class="grid md:grid-cols-2 gap-8 w-full">
               <div>
                 <h3 class="text-3xl font-black mb-4">Custom Templates</h3>
-                <p class="text-gray-400 text-lg">Create routines for Push/Pull/Legs, Upper/Lower, or full body splits. Copy, paste, modify.</p>
+                <p class="text-gray-400 text-lg">Create routines for Push/Pull/Legs, Upper/Lower, or full body splits.
+                  Copy, paste, modify.</p>
               </div>
               <div class="grid grid-cols-2 gap-3 opacity-60 group-hover:opacity-100 transition-opacity duration-500">
                 <div class="bg-gray-900 p-4 rounded-xl border border-white/10 text-center">
@@ -139,7 +159,8 @@
                   <div class="font-bold text-green-500">UL</div>
                   <div class="text-xs text-gray-500">Upper Lower</div>
                 </div>
-                <div class="bg-gray-900 p-4 rounded-xl border border-white/10 text-center flex items-center justify-center">
+                <div
+                  class="bg-gray-900 p-4 rounded-xl border border-white/10 text-center flex items-center justify-center">
                   <span class="text-xl">+</span>
                 </div>
               </div>
@@ -151,10 +172,61 @@
 
     <!-- Infinite Text Marquee -->
     <div class="py-20 border-y border-white/5 bg-[#0A0A0A] overflow-hidden whitespace-nowrap">
-      <div ref="marquee" class="inline-block text-[120px] font-black leading-none text-transparent stroke-text opacity-20">
+      <div ref="marquee"
+        class="inline-block text-[120px] font-black leading-none text-transparent stroke-text opacity-20">
         STRENGTH • HYPERTROPHY • ENDURANCE • POWER • SPEED • STRENGTH • HYPERTROPHY • ENDURANCE • POWER • SPEED •
       </div>
     </div>
+
+    <!-- Testimonials -->
+    <section class="py-32 px-6 relative border-t border-white/5">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-20">
+          <span class="text-primary-500 font-mono text-sm tracking-widest uppercase block mb-4">Community</span>
+          <h2 class="text-4xl md:text-6xl font-black tracking-tighter">BUILT FOR <br>ATHLETES</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div v-for="(testimonial, i) in testimonials" :key="i"
+            class="bg-[#0A0A0A] p-8 rounded-3xl border border-white/5 relative group hover:border-primary-500/30 transition-colors duration-300">
+            <div class="flex items-center gap-4 mb-6">
+              <div class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-xl font-bold">
+                {{ testimonial.initials }}
+              </div>
+              <div>
+                <div class="font-bold">{{ testimonial.name }}</div>
+                <div class="text-xs text-primary-500 uppercase tracking-wider">{{ testimonial.role }}</div>
+              </div>
+            </div>
+            <p class="text-gray-400 leading-relaxed">"{{ testimonial.text }}"</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-32 px-6 relative border-t border-white/5 bg-[#080808]">
+      <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl md:text-6xl font-black tracking-tighter mb-4">FAQ</h2>
+          <p class="text-gray-400">Common questions about Ryne.</p>
+        </div>
+
+        <div class="space-y-4">
+          <div v-for="(item, i) in faqItems" :key="i"
+            class="border border-white/5 rounded-2xl overflow-hidden bg-[#0A0A0A]">
+            <button @click="toggleFaq(i)"
+              class="w-full flex items-center justify-between p-6 text-left hover:bg-white/5 transition-colors">
+              <span class="font-bold text-lg">{{ item.question }}</span>
+              <span class="transform transition-transform duration-300" :class="{ 'rotate-180': item.isOpen }">↓</span>
+            </button>
+            <div v-show="item.isOpen" class="p-6 pt-0 text-gray-400 leading-relaxed">
+              {{ item.answer }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Final CTA -->
     <section class="h-screen flex items-center justify-center relative overflow-hidden">
@@ -162,10 +234,8 @@
         <h2 class="text-6xl md:text-9xl font-black mb-8 tracking-tighter">
           READY TO <span class="text-primary-500">WORK?</span>
         </h2>
-        <button 
-          @click="showAuthModal = true; authMode = 'signup'"
-          class="px-12 py-6 bg-white text-black font-black text-2xl hover:scale-105 transition-transform duration-300 rounded-full"
-        >
+        <button @click="showAuthModal = true; authMode = 'signup'"
+          class="px-12 py-6 bg-white text-black font-black text-2xl hover:scale-105 transition-transform duration-300 rounded-full">
           JOIN NOW
         </button>
       </div>
@@ -173,56 +243,77 @@
       <div class="absolute inset-0 z-0 bg-gradient-to-t from-primary-900/20 via-transparent to-transparent"></div>
     </section>
 
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-white/10 bg-[#050505]">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 bg-white flex items-center justify-center">
+            <span class="text-xs font-black text-black">R</span>
+          </div>
+          <span class="font-bold tracking-tight">RYNE</span>
+        </div>
+        <div class="text-gray-500 text-sm">
+          &copy; {{ new Date().getFullYear() }} Ryne. All rights reserved.
+        </div>
+        <div class="flex gap-6 text-sm text-gray-400">
+          <a href="#" class="hover:text-white transition-colors">Privacy</a>
+          <a href="#" class="hover:text-white transition-colors">Terms</a>
+          <a href="#" class="hover:text-white transition-colors">Contact</a>
+        </div>
+      </div>
+    </footer>
+
     <!-- Auth Modal (Reused Logic) -->
-    <Transition
-      enter-active-class="transition duration-300 ease-out"
-      enter-from-class="transform scale-95 opacity-0"
-      enter-to-class="transform scale-100 opacity-100"
-      leave-active-class="transition duration-200 ease-in"
-      leave-from-class="transform scale-100 opacity-100"
-      leave-to-class="transform scale-95 opacity-0"
-    >
+    <Transition enter-active-class="transition duration-300 ease-out" enter-from-class="transform scale-95 opacity-0"
+      enter-to-class="transform scale-100 opacity-100" leave-active-class="transition duration-200 ease-in"
+      leave-from-class="transform scale-100 opacity-100" leave-to-class="transform scale-95 opacity-0">
       <div v-if="showAuthModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-xl" @click="showAuthModal = false"></div>
         <div class="bg-[#0A0A0A] border border-white/10 p-8 rounded-3xl w-full max-w-md relative z-10 shadow-2xl">
-          <button @click="showAuthModal = false" class="absolute top-6 right-6 text-gray-400 hover:text-white">✕</button>
-          
+          <button @click="showAuthModal = false"
+            class="absolute top-6 right-6 text-gray-400 hover:text-white">✕</button>
+
           <h2 class="text-3xl font-black mb-1">{{ authMode === 'login' ? 'WELCOME BACK' : 'START NOW' }}</h2>
           <p class="text-gray-500 mb-8 text-sm">Enter your details below.</p>
 
           <div class="flex bg-gray-900 rounded-lg p-1 mb-8">
-            <button 
-              @click="authMode = 'login'"
-              class="flex-1 py-2 text-sm font-bold rounded-md transition-colors"
-              :class="authMode === 'login' ? 'bg-white text-black' : 'text-gray-400 hover:text-white'"
-            >
+            <button @click="authMode = 'login'" class="flex-1 py-2 text-sm font-bold rounded-md transition-colors"
+              :class="authMode === 'login' ? 'bg-white text-black' : 'text-gray-400 hover:text-white'">
               LOGIN
             </button>
-            <button 
-              @click="authMode = 'signup'"
-              class="flex-1 py-2 text-sm font-bold rounded-md transition-colors"
-              :class="authMode === 'signup' ? 'bg-white text-black' : 'text-gray-400 hover:text-white'"
-            >
+            <button @click="authMode = 'signup'" class="flex-1 py-2 text-sm font-bold rounded-md transition-colors"
+              :class="authMode === 'signup' ? 'bg-white text-black' : 'text-gray-400 hover:text-white'">
               SIGN UP
             </button>
           </div>
 
           <form @submit.prevent="authMode === 'login' ? handleLogin() : handleSignup()" class="space-y-4">
             <div v-if="authMode === 'signup'">
-              <input v-model="signupForm.name" type="text" placeholder="Full Name" class="w-full bg-[#111] border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 hover:border-white/20 transition-colors" required />
+              <input v-model="signupForm.name" type="text" placeholder="Full Name"
+                class="w-full bg-[#111] border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 hover:border-white/20 transition-colors"
+                required />
             </div>
             <div>
-              <input v-if="authMode === 'login'" v-model="loginForm.email" type="email" placeholder="Email Address" class="w-full bg-[#111] border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 hover:border-white/20 transition-colors" required />
-              <input v-else v-model="signupForm.email" type="email" placeholder="Email Address" class="w-full bg-[#111] border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 hover:border-white/20 transition-colors" required />
+              <input v-if="authMode === 'login'" v-model="loginForm.email" type="email" placeholder="Email Address"
+                class="w-full bg-[#111] border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 hover:border-white/20 transition-colors"
+                required />
+              <input v-else v-model="signupForm.email" type="email" placeholder="Email Address"
+                class="w-full bg-[#111] border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 hover:border-white/20 transition-colors"
+                required />
             </div>
             <div>
-              <input v-if="authMode === 'login'" v-model="loginForm.password" type="password" placeholder="Password" class="w-full bg-[#111] border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 hover:border-white/20 transition-colors" required />
-              <input v-else v-model="signupForm.password" type="password" placeholder="Password" class="w-full bg-[#111] border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 hover:border-white/20 transition-colors" required />
+              <input v-if="authMode === 'login'" v-model="loginForm.password" type="password" placeholder="Password"
+                class="w-full bg-[#111] border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 hover:border-white/20 transition-colors"
+                required />
+              <input v-else v-model="signupForm.password" type="password" placeholder="Password"
+                class="w-full bg-[#111] border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 hover:border-white/20 transition-colors"
+                required />
             </div>
 
             <div v-if="error" class="text-red-500 text-sm font-bold">{{ error }}</div>
 
-            <button type="submit" class="w-full bg-primary-600 hover:bg-primary-500 text-white font-bold py-4 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98]">
+            <button type="submit"
+              class="w-full bg-primary-600 hover:bg-primary-500 text-white font-bold py-4 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98]">
               {{ isLoading ? 'PROCESSING...' : (authMode === 'login' ? 'LOGIN' : 'CREATE ACCOUNT') }}
             </button>
           </form>
@@ -238,7 +329,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-definePageMeta({ layout: false })
+definePageMeta({
+  layout: false,
+  auth: false
+})
 
 const { login, signup } = useAuth()
 const router = useRouter()
@@ -252,6 +346,54 @@ const error = ref('')
 // Form Data
 const loginForm = ref({ email: '', password: '' })
 const signupForm = ref({ name: '', email: '', password: '' })
+
+// Testimonials Data
+const testimonials = ref([
+  {
+    initials: 'SK',
+    name: 'Sarah K.',
+    role: 'CrossFit Athlete',
+    text: 'This app changed my training. I used to carry a notebook everywhere. Now I just focus on the lift.'
+  },
+  {
+    initials: 'MT',
+    name: 'Mike T.',
+    role: 'Powerlifter',
+    text: 'Simple, effective, no fluff. Exactly what I needed for my 5/3/1 cycles. The analytics are spot on.'
+  },
+  {
+    initials: 'JR',
+    name: 'James R.',
+    role: 'Bodybuilder',
+    text: 'The offline mode is a lifesaver in my basement gym. Syncs perfectly when I get back upstairs.'
+  }
+])
+
+// FAQ Data
+const faqItems = ref([
+  {
+    question: 'Is Ryne free to use?',
+    answer: 'Yes, Ryne is currently free for all users. We plan to introduce a premium tier with advanced analytics and coaching features in the future, but the core tracking will always remain free.',
+    isOpen: false
+  },
+  {
+    question: 'Can I export my workout data?',
+    answer: 'Absolutely. You own your data. You can export your full workout history as a CSV file at any time from the settings menu.',
+    isOpen: false
+  },
+  {
+    question: 'Does it work on Android?',
+    answer: 'Yes! Ryne is a Progressive Web App (PWA). You can install it on both iOS and Android devices directly from your browser for a native app-like experience.',
+    isOpen: false
+  }
+])
+
+const toggleFaq = (index: number) => {
+  const item = faqItems.value[index]
+  if (item) {
+    item.isOpen = !item.isOpen
+  }
+}
 
 // DOM Refs
 const heroHeadline = ref<HTMLElement>()
@@ -297,23 +439,23 @@ const handleSignup = async () => {
 onMounted(() => {
   // Hero Animations
   const tl = gsap.timeline()
-  
+
   if (heroHeadline.value) {
     const chars = heroHeadline.value.children
     tl.from(heroHeadline.value, { y: 100, opacity: 0, duration: 1.2, ease: "power4.out", skewY: 5 })
   }
-  
+
   if (heroSub.value) tl.from(heroSub.value, { y: 20, opacity: 0, duration: 0.8 }, "-=0.8")
   if (heroCTA.value) tl.from(heroCTA.value, { y: 20, opacity: 0, duration: 0.8 }, "-=0.6")
-  
+
   if (heroImage.value) {
-    gsap.from(heroImage.value, { 
-      scale: 0.8, 
-      opacity: 0, 
-      duration: 1.5, 
-      ease: "power2.out" 
+    gsap.from(heroImage.value, {
+      scale: 0.8,
+      opacity: 0,
+      duration: 1.5,
+      ease: "power2.out"
     })
-    
+
     // Floating effect
     gsap.to(heroImage.value, {
       y: -20,
@@ -322,7 +464,7 @@ onMounted(() => {
       yoyo: true,
       ease: "sine.inOut"
     })
-    
+
     // Parallax on scroll
     gsap.to(heroImage.value, {
       scrollTrigger: {
@@ -348,7 +490,7 @@ onMounted(() => {
     stagger: 0.1,
     ease: "power2.out"
   })
-  
+
   // Marquee
   if (marquee.value) {
     gsap.to(marquee.value, {
@@ -380,7 +522,14 @@ onMounted(() => {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateZ(50px) translateY(0); }
-  50% { transform: translateZ(50px) translateY(-10px); }
+
+  0%,
+  100% {
+    transform: translateZ(50px) translateY(0);
+  }
+
+  50% {
+    transform: translateZ(50px) translateY(-10px);
+  }
 }
 </style>
