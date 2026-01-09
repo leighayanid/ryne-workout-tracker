@@ -95,8 +95,9 @@ export const useSync = () => {
     // Send to server
     const response = await $fetch('/api/workouts', {
       method: 'POST',
+      credentials: 'include',
       body: {
-        date: workout.date,
+        date: new Date(workout.date).toISOString(),
         notes: workout.notes,
         status: workout.status,
         exercises: workout.exercises.map((e: any) => ({
@@ -118,10 +119,9 @@ export const useSync = () => {
 
       // Update exercises with serverIds if provided
       if ((response as any).exercises) {
+        const localExercises = await localDB.getExercisesByWorkout(workout.localId)
         for (let i = 0; i < workout.exercises.length; i++) {
-          const exercise = workout.exercises[i]
-          const localExercise = await localDB.getExercisesByWorkout(workout.localId)
-          const match = localExercise[i]
+          const match = localExercises[i]
           if (match && (response as any).exercises[i]) {
             match.serverId = (response as any).exercises[i].id
             await localDB.saveExercise(match)
@@ -142,8 +142,9 @@ export const useSync = () => {
     // Send to server
     await $fetch(`/api/workouts/${workout.serverId}`, {
       method: 'PUT',
+      credentials: 'include',
       body: {
-        date: workout.date,
+        date: new Date(workout.date).toISOString(),
         notes: workout.notes,
         status: workout.status,
         exercises: workout.exercises.map((e: any) => ({
@@ -170,6 +171,7 @@ export const useSync = () => {
     if (serverId) {
       await $fetch(`/api/workouts/${serverId}`, {
         method: 'DELETE',
+        credentials: 'include',
       })
     }
   }

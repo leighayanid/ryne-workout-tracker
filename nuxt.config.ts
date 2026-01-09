@@ -73,9 +73,22 @@ export default defineNuxtConfig({
       ]
     },
     workbox: {
-      navigateFallback: '/',
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+      navigateFallback: undefined,
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,woff,woff2}'],
+      navigateFallbackDenylist: [/^\/api\//],
       runtimeCaching: [
+        {
+          urlPattern: ({ request }) => request.mode === 'navigate',
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'pages-cache',
+            expiration: {
+              maxEntries: 20,
+              maxAgeSeconds: 24 * 60 * 60 // 24 hours
+            },
+            networkTimeoutSeconds: 3
+          }
+        },
         {
           urlPattern: /^https:\/\/.*\.(?:png|jpg|jpeg|svg|gif)$/,
           handler: 'CacheFirst',
@@ -86,6 +99,10 @@ export default defineNuxtConfig({
               maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
             }
           }
+        },
+        {
+          urlPattern: /\/api\/.*/,
+          handler: 'NetworkOnly'
         }
       ]
     },
