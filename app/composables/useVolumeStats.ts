@@ -6,26 +6,33 @@ export interface WeeklyVolumeData {
   volume: number
   change: number
   workoutCount: number
+  totalReps: number
+  weightedVolume: number
 }
 
 export const useVolumeStats = () => {
   /**
    * Calculate total volume for a workout (sets × reps × weight)
+   * Returns both weighted volume and total reps
    */
-  const calculateWorkoutVolume = async (workoutLocalId: string): Promise<number> => {
+  const calculateWorkoutVolume = async (workoutLocalId: string): Promise<{ weightedVolume: number; totalReps: number }> => {
     try {
       const exercises = await localDB.getExercisesByWorkout(workoutLocalId)
-      let totalVolume = 0
+      let weightedVolume = 0
+      let totalReps = 0
 
       for (const exercise of exercises) {
         const weight = exercise.weight ?? 0
-        totalVolume += exercise.sets * exercise.reps * weight
+        const reps = exercise.sets * exercise.reps
+
+        weightedVolume += reps * weight
+        totalReps += reps
       }
 
-      return totalVolume
+      return { weightedVolume, totalReps }
     } catch (error) {
       console.error('Error calculating workout volume:', error)
-      return 0
+      return { weightedVolume: 0, totalReps: 0 }
     }
   }
 
@@ -40,7 +47,7 @@ export const useVolumeStats = () => {
       workouts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
       // Group workouts by week
-      const weeklyData = new Map<string, { volume: number; workoutCount: number }>()
+      const weeklyData = new Map<string, { weightedVolume: number; totalReps: number; workoutCount: number }>()
 
       for (const workout of workouts) {
         const workoutDate = new Date(workout.date)
@@ -53,14 +60,15 @@ export const useVolumeStats = () => {
         const weekKey = startOfWeek.toISOString().split('T')[0]
 
         // Calculate volume for this workout
-        const volume = await calculateWorkoutVolume(workout.localId)
+        const { weightedVolume, totalReps } = await calculateWorkoutVolume(workout.localId)
 
         if (!weeklyData.has(weekKey)) {
-          weeklyData.set(weekKey, { volume: 0, workoutCount: 0 })
+          weeklyData.set(weekKey, { weightedVolume: 0, totalReps: 0, workoutCount: 0 })
         }
 
         const weekData = weeklyData.get(weekKey)!
-        weekData.volume += volume
+        weekData.weightedVolume += weightedVolume
+        weekData.totalReps += totalReps
         weekData.workoutCount += 1
       }
 
@@ -77,20 +85,26 @@ export const useVolumeStats = () => {
 
       // Calculate percentage change
       const result: WeeklyVolumeData[] = recentWeeks.map((weekData, index) => {
+        // Use totalReps as the primary metric (always > 0 if workouts exist)
+        // Add weighted volume if it exists
+        const combinedVolume = weekData.totalReps + weekData.weightedVolume
+
         let change = 0
 
         if (index > 0) {
-          const previousVolume = recentWeeks[index - 1].volume
-          if (previousVolume > 0) {
-            change = ((weekData.volume - previousVolume) / previousVolume) * 100
+          const previousCombined = recentWeeks[index - 1].totalReps + recentWeeks[index - 1].weightedVolume
+          if (previousCombined > 0) {
+            change = ((combinedVolume - previousCombined) / previousCombined) * 100
           }
         }
 
         return {
           week: formatWeekLabel(weekData.week),
-          volume: Math.round(weekData.volume),
+          volume: Math.round(combinedVolume),
           change: Math.round(change),
-          workoutCount: weekData.workoutCount
+          workoutCount: weekData.workoutCount,
+          totalReps: Math.round(weekData.totalReps),
+          weightedVolume: Math.round(weekData.weightedVolume)
         }
       })
 
@@ -149,18 +163,21 @@ export const useVolumeStats = () => {
       })
 
       // Calculate total volume
-      let totalVolume = 0
+      let weightedVolume = 0
+      let totalReps = 0
       let totalExercises = 0
 
       for (const workout of thisWeekWorkouts) {
-        totalVolume += await calculateWorkoutVolume(workout.localId)
+        const volume = await calculateWorkoutVolume(workout.localId)
+        weightedVolume += volume.weightedVolume
+        totalReps += volume.totalReps
         const exercises = await localDB.getExercisesByWorkout(workout.localId)
         totalExercises += exercises.length
       }
 
       return {
         workoutCount: thisWeekWorkouts.length,
-        totalVolume: Math.round(totalVolume),
+        totalVolume: Math.round(totalReps + weightedVolume),
         totalExercises
       }
     } catch (error) {

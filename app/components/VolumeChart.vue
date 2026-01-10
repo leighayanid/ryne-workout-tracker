@@ -13,7 +13,7 @@
             <YAxis
               :tick="{ fill: textColor, fontSize: 12 }"
               :stroke="axisColor"
-              :label="{ value: 'Volume (lbs)', angle: -90, position: 'insideLeft', fill: textColor }"
+              :label="{ value: 'Total Volume', angle: -90, position: 'insideLeft', fill: textColor }"
             />
             <Tooltip :content="CustomTooltip" />
             <Bar dataKey="volume" :fill="barColor" radius="[8, 8, 0, 0]" />
@@ -70,18 +70,45 @@ const CustomTooltip = ({ active, payload }: any) => {
 
   const data = payload[0].payload
 
-  return h('div', {
-    class: 'bg-white dark:bg-gray-800 px-3 py-2 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700'
-  }, [
+  const tooltipContent = [
     h('p', {
-      class: 'text-sm font-semibold text-gray-900 dark:text-white mb-1'
+      class: 'text-sm font-semibold text-gray-900 dark:text-white mb-2'
     }, data.week),
     h('p', {
-      class: 'text-sm text-gray-600 dark:text-gray-400'
-    }, `Volume: ${data.volume.toLocaleString()} lbs`),
-    data.change !== 0 && h('p', {
-      class: `text-xs mt-1 ${data.change > 0 ? 'text-green-600' : 'text-red-600'}`
-    }, `${data.change > 0 ? '↑' : '↓'} ${Math.abs(data.change)}% from last week`)
-  ])
+      class: 'text-sm text-gray-600 dark:text-gray-400 mb-1'
+    }, `Total Volume: ${data.volume.toLocaleString()}`),
+  ]
+
+  // Show breakdown if there's weighted volume
+  if (data.weightedVolume > 0) {
+    tooltipContent.push(
+      h('div', {
+        class: 'text-xs text-gray-500 dark:text-gray-400 space-y-0.5 mt-1 pt-1 border-t border-gray-200 dark:border-gray-700'
+      }, [
+        h('p', {}, `• Weighted: ${data.weightedVolume.toLocaleString()} lbs`),
+        h('p', {}, `• Reps: ${data.totalReps.toLocaleString()}`)
+      ])
+    )
+  }
+
+  // Show workouts count
+  tooltipContent.push(
+    h('p', {
+      class: 'text-xs text-gray-500 dark:text-gray-400 mt-1'
+    }, `${data.workoutCount} workout${data.workoutCount !== 1 ? 's' : ''}`)
+  )
+
+  // Show change
+  if (data.change !== 0) {
+    tooltipContent.push(
+      h('p', {
+        class: `text-xs mt-1 ${data.change > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`
+      }, `${data.change > 0 ? '↑' : '↓'} ${Math.abs(data.change)}% from last week`)
+    )
+  }
+
+  return h('div', {
+    class: 'bg-white dark:bg-gray-800 px-3 py-2 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700'
+  }, tooltipContent)
 }
 </script>
