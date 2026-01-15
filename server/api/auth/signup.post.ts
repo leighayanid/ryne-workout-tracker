@@ -1,8 +1,8 @@
-import { signupSchema } from '~/server/utils/validation'
-import { hashPassword, generateAccessToken, generateRefreshToken, createSession } from '~/server/utils/auth'
-import prisma from '~/server/utils/prisma'
-import { logger } from '~/server/utils/logger'
-import { rateLimit, rateLimitPresets } from '~/server/utils/rateLimit'
+import { signupSchema } from '~~/server/utils/validation'
+import { hashPassword, createSession, setSessionCookie } from '~~/server/utils/auth'
+import prisma from '~~/server/utils/prisma'
+import { logger } from '~~/server/utils/logger'
+import { rateLimit, rateLimitPresets } from '~~/server/utils/rateLimit'
 
 export default defineEventHandler(async (event) => {
   // Rate limiting
@@ -44,20 +44,18 @@ export default defineEventHandler(async (event) => {
       },
     })
 
-    // Generate tokens
-    const accessToken = generateAccessToken(user.id, user.email)
-    const refreshToken = generateRefreshToken(user.id, user.email)
-
-    // Store refresh token session
-    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
-    await createSession(user.id, refreshToken, expiresAt)
+    // Create session and set cookie (auto-login after signup)
+    const sessionToken = await createSession(user.id)
+    setSessionCookie(event, sessionToken)
 
     logger.info({ userId: user.id, email: user.email }, 'User signed up successfully')
 
     return {
-      user,
-      accessToken,
-      refreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
     }
   } catch (error: any) {
     logger.error({ error: error.message }, 'Signup error')

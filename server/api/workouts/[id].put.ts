@@ -1,8 +1,8 @@
-import { requireAuth } from '~/server/utils/auth'
-import { updateWorkoutSchema } from '~/server/utils/validation'
-import prisma from '~/server/utils/prisma'
-import { logger } from '~/server/utils/logger'
-import { rateLimit, rateLimitPresets } from '~/server/utils/rateLimit'
+import { requireAuth } from '~~/server/utils/auth'
+import { updateWorkoutSchema } from '~~/server/utils/validation'
+import prisma from '~~/server/utils/prisma'
+import { logger } from '~~/server/utils/logger'
+import { rateLimit, rateLimitPresets } from '~~/server/utils/rateLimit'
 
 export default defineEventHandler(async (event) => {
   // Rate limiting
@@ -55,6 +55,7 @@ export default defineEventHandler(async (event) => {
       data: {
         ...(validatedData.date && { date: new Date(validatedData.date) }),
         ...(validatedData.notes !== undefined && { notes: validatedData.notes }),
+        ...(validatedData.status && { status: validatedData.status }),
         ...(validatedData.exercises && {
           exercises: {
             create: validatedData.exercises.map((exercise) => ({

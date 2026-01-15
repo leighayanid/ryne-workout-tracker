@@ -1,21 +1,23 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  future: {
+    compatibilityVersion: 4,
+  },
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
 
   modules: [
     '@nuxtjs/tailwindcss',
-    '@vite-pwa/nuxt'
+    '@vite-pwa/nuxt',
   ],
 
   runtimeConfig: {
     // Private keys (only available server-side)
-    jwtSecret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
     databaseUrl: process.env.DATABASE_URL,
 
     // Public keys (exposed to client)
     public: {
-      appName: 'Gymnote',
+      appName: 'Ryne',
       appVersion: '1.0.0',
       apiBase: process.env.NUXT_PUBLIC_API_BASE || '/api',
     },
@@ -24,15 +26,6 @@ export default defineNuxtConfig({
   // Security headers
   nitro: {
     routeRules: {
-      '/**': {
-        headers: {
-          'X-Content-Type-Options': 'nosniff',
-          'X-Frame-Options': 'DENY',
-          'X-XSS-Protection': '1; mode=block',
-          'Referrer-Policy': 'strict-origin-when-cross-origin',
-          'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
-        },
-      },
       '/api/**': {
         cors: true,
         headers: {
@@ -52,8 +45,8 @@ export default defineNuxtConfig({
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
-      name: 'Gymnote - Offline Workout Tracker',
-      short_name: 'Gymnote',
+      name: 'Ryne - Offline Workout Tracker',
+      short_name: 'Ryne',
       description: 'Simple offline-first workout tracking app',
       theme_color: '#6f58c9',
       background_color: '#ffffff',
@@ -62,19 +55,40 @@ export default defineNuxtConfig({
         {
           src: '/icon-192x192.png',
           sizes: '192x192',
-          type: 'image/png'
+          type: 'image/png',
+          purpose: 'any'
         },
         {
           src: '/icon-512x512.png',
           sizes: '512x512',
-          type: 'image/png'
+          type: 'image/png',
+          purpose: 'any'
+        },
+        {
+          src: '/maskable-icon.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'maskable'
         }
       ]
     },
     workbox: {
-      navigateFallback: '/',
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+      navigateFallback: undefined,
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,woff,woff2}'],
+      navigateFallbackDenylist: [/^\/api\//],
       runtimeCaching: [
+        {
+          urlPattern: ({ request }) => request.mode === 'navigate',
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'pages-cache',
+            expiration: {
+              maxEntries: 20,
+              maxAgeSeconds: 24 * 60 * 60 // 24 hours
+            },
+            networkTimeoutSeconds: 3
+          }
+        },
         {
           urlPattern: /^https:\/\/.*\.(?:png|jpg|jpeg|svg|gif)$/,
           handler: 'CacheFirst',
@@ -85,6 +99,10 @@ export default defineNuxtConfig({
               maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
             }
           }
+        },
+        {
+          urlPattern: /\/api\/.*/,
+          handler: 'NetworkOnly'
         }
       ]
     },
