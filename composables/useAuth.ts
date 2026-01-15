@@ -112,6 +112,52 @@ export const useAuth = () => {
     return accessToken.value
   }
 
+  const getRefreshToken = () => {
+    return refreshToken.value
+  }
+
+  const refreshAccessToken = async (): Promise<boolean> => {
+    const currentRefreshToken = refreshToken.value
+    if (!currentRefreshToken) {
+      return false
+    }
+
+    try {
+      const response = await $fetch('/api/auth/refresh', {
+        method: 'POST',
+        body: {
+          token: currentRefreshToken
+        }
+      })
+
+      accessToken.value = (response as any).accessToken
+
+      // Update user info if provided
+      if ((response as any).user) {
+        user.value = {
+          id: (response as any).user.id,
+          name: (response as any).user.name,
+          email: (response as any).user.email
+        }
+      }
+
+      // Update localStorage
+      if (process.client) {
+        localStorage.setItem('gymnote_access_token', accessToken.value!)
+        if (user.value) {
+          localStorage.setItem('gymnote_user', JSON.stringify(user.value))
+        }
+      }
+
+      return true
+    } catch (error) {
+      console.error('Token refresh failed:', error)
+      // If refresh fails, user needs to re-login
+      await logout()
+      return false
+    }
+  }
+
   const initAuth = () => {
     if (process.client) {
       const storedUser = localStorage.getItem('gymnote_user')
@@ -143,6 +189,8 @@ export const useAuth = () => {
     logout,
     markWelcomeSeen,
     getAccessToken,
+    getRefreshToken,
+    refreshAccessToken,
     initAuth
   }
 }
